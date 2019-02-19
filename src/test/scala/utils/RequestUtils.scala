@@ -10,5 +10,4 @@ object RequestUtils {
 
   def saveCsrfToken = regex(_ => csrfPattern).saveAs("csrfToken")
   def saveGroupId = regex(_ => groupIdPattern).saveAs("groupId")
-
 }
