@@ -7,10 +7,10 @@ class Simulation extends PerformanceTestRunner {
 
   setup("Sdes Page", "Navigate to sdes  page") withRequests (
     getLoginPage,
-    getStrideAuthLoginPage,
     postStrideAuthPage,
-    getCreateDER,
-    getSdesLandingPage
+    postSamlResponse,
+    getSdesLandingPage,
+    postCreateDER
   )
 
 //  setup("login", "Login") withRequests (navigateToLoginPage, submitLogin)
