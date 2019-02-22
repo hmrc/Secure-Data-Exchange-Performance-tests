@@ -11,11 +11,13 @@ import utils.RequestUtils
 object Requests extends ServicesConfiguration {
 
   val baseUrl = baseUrlFor("secure-data-exchange")
-  val strideBaseUrl=baseUrlFor("stride-auth")
+  val strideBaseUrl = baseUrlFor("stride-auth")
 
   private def savePageItem(name: String, pattern: String) = regex(_ => pattern).saveAs(name)
+
   //  val csrfPattern = """<input type="hidden" name="csrfToken" value="([^"]+)""""
-  val relayStatePattern = """<input type="hidden" id="RelayState" name="RelayState" value="([^"]+)""""
+  val relayStatePattern =
+    """<input type="hidden" id="RelayState" name="RelayState" value="([^"]+)""""
   val samlResponsePattern = """<input type="hidden" name="SAMLResponse" value="([^"]+)""""
   val formUrlPattern = """<form action="([^"]+)"""
 
@@ -62,20 +64,171 @@ object Requests extends ServicesConfiguration {
       .check(regex("Requestor home").exists)
   }
 
-
   def postCreateDER: HttpRequestBuilder = {
     http("Create DER")
       .post("https://admin.development.tax.service.gov.uk/sdes/dashboard/requestor/create-der")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
+      .check(header("Location").is(s"/sdes/create-request/select-request-type":String))
   }
 
-  def getTemplatePage: HttpRequestBuilder = {
-    http("Navigate to Template Page")
-      .get(s"$baseUrl/sdes/create-request/select-template")
+  def getRequestType: HttpRequestBuilder = {
+    http("get Request type")
+      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/select-request-type")
       .check(status.is(200))
-      .check(regex("").exists)
+      .check(RequestUtils.saveCsrfToken)
+    .check(regex("Create a new Data Exchange Request").exists)
+
+    }
+
+  def postRequestType: HttpRequestBuilder = {
+    http("post Request type")
+      .post(s"https://admin.development.tax.service.gov.uk/sdes/create-request/select-request-type")
+      .formParam("request-type", "electronic")
+//      .formParam("type", "submit")
+      .formParam("csrfToken", "${csrfToken}")
+      .check(status.is(303))
+      .check(header("Location").is(s"/sdes/create-request/select-template":String))
+
+
+  }
+
+  def getSelectTemplate: HttpRequestBuilder = {
+    http("TemplateType")
+      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/select-template")
+      .check(RequestUtils.saveCsrfToken)
+      .check(status.is(200))
+      .check(regex("Select Data Exchange Template").exists)
+
+  }
+  def postSelectTemplate: HttpRequestBuilder = {
+    http("TemplateType")
+      .post(s"https://admin.development.tax.service.gov.uk/sdes/create-request/select-template")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("data-exchange-template", "businessIntel_;_Business Intelligence to MoD")
+      .check(status.is(303))
+      .check(header("Location").is(s"/sdes/create-request/data-sending-frequency":String))
+  }
+//
+  def getFrequency: HttpRequestBuilder = {
+    http("Frequency")
+      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/data-sending-frequency")
+      .check(RequestUtils.saveCsrfToken)
+      .check(status.is(200))
+      .check(regex("Is data sent more than once in 5 years?").exists)
+  }
+  def postFrequency: HttpRequestBuilder = {
+    http("Frequency")
+      .post(s"https://admin.development.tax.service.gov.uk/sdes/create-request/data-sending-frequency")
+      .formParam("request-frequency", "recurring")
+      .formParam("csrfToken", "${csrfToken}")
+      .check(status.is(303))
+      .check(header("Location").is(s"/sdes/create-request/confirm-requestor-details":String))
+  }
+
+  def getConfirmDetails: HttpRequestBuilder = {
+    http("get ConfirmDetails")
+      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/confirm-requestor-details")
+      .check(status.is(200))
+      .check(RequestUtils.saveCsrfToken)
+      .check(regex("Confirm requestor details").exists)
+  }
+  def postConfirmDetails: HttpRequestBuilder = {
+    http("post ConfirmDetails")
+      .post(s"https://admin.development.tax.service.gov.uk/sdes/create-request/confirm-requestor-details")
+      .formParam("main-requestor", "test testst ; 123 ; Test@gmail.com")
+      .formParam("alternative-requestor.name", "Knight, Gladys ; 2121921 ; Gladys.Knight@hmrc.gov.uk")
+      .formParam("alternative-requestor.selected", "true")
+      .formParam("csrfToken", "${csrfToken}")
+      .check(status.is(303))
+      .check(header("Location").is(s"/sdes/create-request/number-of-data-recipients":String))
+
+  }
+  def getDataRecipients: HttpRequestBuilder = {
+    http("DataRecepients")
+      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/number-of-data-recipients")
+      .check(status.is(200))
+      .check(RequestUtils.saveCsrfToken)
+      .check(regex("Add organisations").exists)
+
+  }
+  def postDataRecipients: HttpRequestBuilder = {
+    http("DataRecepients")
+      .post(s"https://admin.development.tax.service.gov.uk/sdes/create-request/number-of-data-recipients")
+      .formParam("csrfToken", "${csrfToken}")
+      .check(status.is(303))
+      .formParam("organisation-number", "1")
+      .check(header("Location").is(s"/sdes/create-request/enter-recipient-details":String))
+  }
+//  def getSrn: HttpRequestBuilder = {
+//    http("Srn")
+//      .get(s"https://admin.development.tax.service.gov.uk/sdes/srn-or-name-search?term=Ab")
+//      .check(status.is(200))
+//      .check(regex("").exists)
+//    //      .check(RequestUtils.saveCsrfToken)
+//  }
+//  def postsrn: HttpRequestBuilder = {
+//    http("srn")
+//      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/srn-or-name-search?term=Ab")
+//      .check(status.is(200))
+//      .check(regex("").exists)
+//    //      .check(RequestUtils.saveCsrfToken)
+//  }
+  def getRecipientDetails: HttpRequestBuilder = {
+    http("get RecipientDetails")
+      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/enter-recipient-details")
+      .check(status.is(200))
+      .check(regex("Enter organisation details").exists)
+          .check(RequestUtils.saveCsrfToken)
+  }
+  def postRecipientDetails: HttpRequestBuilder = {
+    http("post RecipientDetails")
+      .post(s"https://admin.development.tax.service.gov.uk/sdes/create-request/enter-recipient-details")
+      .formParam("csrfToken", "${csrfToken}")
+      .check(status.is(303))
+      .formParam("organisation-details[0].name", "Abbey Bank PLC - 589117616467")
+      .formParam("organisation-details[0].selected", "true")
+      .check(header("Location").is(s"/sdes/create-request/enter-request-name":String))
+  }
+  def getRequestName: HttpRequestBuilder = {
+    http("get RequestName")
+      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/enter-request-name")
+      .check(status.is(200))
+      .check(regex("Enter a request name").exists)
       .check(RequestUtils.saveCsrfToken)
   }
 
+  def postRequestName: HttpRequestBuilder = {
+    http("post RequestName")
+      .post(s"https://admin.development.tax.service.gov.uk/sdes/create-request/enter-request-name")
+      .formParam("csrfToken", "${csrfToken}")
+      .check(status.is(303))
+      .formParam("request-name", "test")
+      .check(header("Location").is(s"/sdes/create-request/check-your-answers":String))
+  }
+
+  def getCheckYourAnswers: HttpRequestBuilder = {
+    http("get Checkyouranswers")
+      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/check-your-answers")
+      .check(status.is(200))
+      .check(regex("Check your answers").exists)
+          .check(RequestUtils.saveCsrfToken)
+  }
+
+  def postCheckyouranswers: HttpRequestBuilder = {
+    http("post Checkyouranswers")
+      .post(s"https://admin.development.tax.service.gov.uk/sdes/create-request/check-your-answers")
+      .formParam("csrfToken", "${csrfToken}")
+      .check(status.is(303))
+      .check(header("Location").is(s"/sdes/create-request/confirmation/STUB-1":String))
+  }
+  def getApprovalPage: HttpRequestBuilder = {
+    http("Sent for Approval page")
+      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/confirmation/STUB-1")
+      .check(status.is(200))
+//      .check(regex("Data Exchange Request sent for approval").exists)
+//     .check(RequestUtils.saveCsrfToken)
+  }
+
 }
+

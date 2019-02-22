@@ -10,7 +10,26 @@ class Simulation extends PerformanceTestRunner {
     postStrideAuthPage,
     postSamlResponse,
     getSdesLandingPage,
-    postCreateDER
+    postCreateDER,
+    getRequestType,
+    postRequestType,
+    getSelectTemplate,
+    postSelectTemplate,
+    getFrequency,
+    postFrequency,
+////    getPidSearch,
+////    postPidSearch,
+    getConfirmDetails,
+    postConfirmDetails,
+    getDataRecipients,
+    postDataRecipients,
+    getRecipientDetails,
+    postRecipientDetails,
+    getRequestName,
+    postRequestName,
+    getCheckYourAnswers,
+    postCheckyouranswers,
+    getApprovalPage
   )
 
 //  setup("login", "Login") withRequests (navigateToLoginPage, submitLogin)
