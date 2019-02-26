@@ -10,7 +10,7 @@ import utils.RequestUtils
 
 object Requests extends ServicesConfiguration {
 
-  val baseUrl = "https://admin.staging.tax.service.gov.uk/sdes/dashboard"
+  val baseUrl = "https://admin.staging.tax.service.gov.uk"
   val strideBaseUrl = baseUrlFor("stride-auth")
 
   private def savePageItem(name: String, pattern: String) = regex(_ => pattern).saveAs(name)
@@ -145,15 +145,15 @@ object Requests extends ServicesConfiguration {
 
   }
   def getDataRecipients: HttpRequestBuilder = {
-    http("DataRecepients")
-      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/number-of-data-recipients")
+    http("get DataRecepients")
+      .get(s"$baseUrl/sdes/create-request/number-of-data-recipients")
       .check(status.is(200))
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Add organisations").exists)
 
   }
   def postDataRecipients: HttpRequestBuilder = {
-    http("DataRecepients")
+    http("post DataRecepients")
       .post(s"$baseUrl/sdes/create-request/number-of-data-recipients")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
@@ -217,7 +217,7 @@ object Requests extends ServicesConfiguration {
 
   def postCheckyouranswers: HttpRequestBuilder = {
     http("post Checkyouranswers")
-      .post(s"https://admin.development.tax.service.gov.uk/sdes/create-request/check-your-answers")
+      .post(s"$baseUrl/sdes/create-request/check-your-answers")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
 //      .check(header("Location").is(s"/sdes/create-request/confirmation/STUB-1":String))
