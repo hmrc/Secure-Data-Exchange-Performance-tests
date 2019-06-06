@@ -58,7 +58,7 @@ object Requests extends ServicesConfiguration {
 
   def getSdesLandingPage: HttpRequestBuilder = {
     http("Navigate to Sdes Landing Page")
-      .get(s"$baseUrl/sdes/dashboard")
+      .get(s"$baseUrl/sdes/dashboard/requestor/requests")
       .check(status.is(200))
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Requestor dashboard").exists)
