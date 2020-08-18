@@ -1,0 +1,51 @@
+{
+  "informationType": "EDM",
+  "correlationID": "87fd291b-276a-4f8d-b194-26f1cf8ac409",
+  "conversationID": "REF001ABC123",
+  "file": {
+    "fileName": "xyz.zip",
+    "fileSize": 4096,
+    "checksum": "bf99d48b7ab540099d101cfc43aeb1af",
+    "checksumAlgorithm": "MD5",
+    "manifest": [
+      {
+        "fileName": "xyz1.png",
+        "fileSize": 4096,
+        "checksum": "bf99d48b7ab540099d101cfc43aeb1af",
+        "checksumAlgorithm": "MD5"
+      },
+      {
+        "fileName": "xyz2.png",
+        "fileSize": 4096,
+        "checksum": "bf99d48b7ab540099d101cfc43aeb1af",
+        "checksumAlgorithm": "MD5"
+      }
+    ],
+    "properties": [
+      {
+        "name": "CAN",
+        "value": "value"
+      },
+      {
+        "name": "MIS ID",
+        "value": "value"
+      },
+      {
+        "name": "Original Box ID",
+        "value": "value"
+      },
+      {
+        "name": "Event URN",
+        "value": "value"
+      },
+      {
+        "name": "Item URN",
+        "value": "value"
+      },
+      {
+        "name": "Item Description",
+        "value": "value"
+      }
+    ]
+  }
+}
