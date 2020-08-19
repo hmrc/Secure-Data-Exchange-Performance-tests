@@ -1,0 +1,33 @@
+<notification>
+  <informationType>EDM</informationType>
+  <correlationID>87fd291b-276a-4f8d-b194-26f1cf8ac409</correlationID>
+  <conversationID>REF001ABC123</conversationID>
+  <file>
+    <fileName>xyz.zip</fileName>
+    <fileSize>4096</fileSize>
+    <checksum>bf99d48b7ab540099d101cfc43aeb1af</checksum>
+    <checksumAlgorithm>MD5</checksumAlgorithm>
+    <manifest>
+      <file>
+        <fileName>xyz1.png</fileName>
+        <fileSize>4096</fileSize>
+        <checksum>bf99d48b7ab540099d101dasdac43aeb1af</checksum>
+        <checksumAlgorithm>MD5</checksumAlgorithm>
+      </file>
+      <file>
+        <fileName>xyz2.png</fileName>
+        <fileSize>4096</fileSize>
+        <checksum>bf99d48b7dada540099d101cfc43aeb1af</checksum>
+        <checksumAlgorithm>MD5</checksumAlgorithm>
+      </file>
+    </manifest>
+    <properties>
+      <property name="CAN">value</property>
+      <property name="MIS ID">value</property>
+      <property name="Original Box ID">value</property>
+      <property name="Event URN">value</property>
+      <property name="Item URN">value</property>
+      <property name="Item Description">value</property>
+    </properties>
+  </file>
+</notification>
