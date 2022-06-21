@@ -21,7 +21,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     organization := "uk.gov.hmrc",
     version := appVersion,
-    scalaVersion := "2.12.11",
+    scalaVersion := "2.12.15",
     scalacOptions ++= Seq(
       "-unchecked",
       "-deprecation",
@@ -32,9 +32,9 @@ lazy val microservice = Project(appName, file("."))
       "-encoding", "UTF-8"
     ),
     retrieveManaged := true,
-    initialCommands in console := "import uk.gov.hmrc._",
-    parallelExecution in Test := false,
-    publishArtifact in Test := true,
+    console / initialCommands := "import uk.gov.hmrc._",
+    Test / parallelExecution := false,
+    Test / publishArtifact := true,
     libraryDependencies ++= appDependencies,
     resolvers ++= Seq(
       "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/",
