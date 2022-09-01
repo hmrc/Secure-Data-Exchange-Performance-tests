@@ -1,11 +1,12 @@
 package uk.gov.hmrc.perftests.requests
 
 import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
+import uk.gov.hmrc.perftests.requests.ADDERRequst._
 import uk.gov.hmrc.perftests.requests.Requests._
 
 class Simulation extends PerformanceTestRunner {
 
-  setup("Sdes Page", "Navigate to sdes  page") withRequests (
+  setup("Sdes Journey", "Navigate to sdes  page") withRequests (
     getLoginPage,
     postStrideAuthPage,
     postSamlResponse,
@@ -49,31 +50,55 @@ class Simulation extends PerformanceTestRunner {
       postAdditonalInformation,
       getCYAPage,
       postSubmitDER
-//    postCreateDER,
-//    getRequestType,
-//    postRequestType,
-//    getSelectTemplate,
-//    postSelectTemplate,
-//    getFrequency,
-//    postFrequency,
-////    getPidSearch,
-////    postPidSearch,
-//    getConfirmDetails,
-//    postConfirmDetails,
-//    getDataRecipients,
-//    postDataRecipients,
-//    getRecipientDetails,
-//    postRecipientDetails,
-//    getRequestName,
-//    postRequestName,
-//    getCheckYourAnswers,
-//    postCheckyouranswers,
-//    getApprovalPage
   )
 
-//  setup("login", "Login") withRequests (navigateToLoginPage, submitLogin)
-//
-//  setup("home", "Go to the homepage") withRequests navigateToHome
+  setup("ADDer Journey", "Navigate to AD DER page") withRequests   (
+    getLoginPage,
+    postStrideAuthPage,
+    postSamlResponse,
+    getSdesLandingPage,
+    getRequestDatamovement,
+    getCreateDER,
+    getCreateTitlename,
+    postEnterDataMovementName,
+    getHowDataMoved,
+    postPhysicaltransfer,
+    getSteps,
+    postStepstomoveData,
+      getDataProtected,
+      postProtectedYes,
+      getmovingdata,
+      postFrequency,
+        getFrequency,
+    postPhysicalDailyFrequency,
+        getStartdate,
+        postStartDate,
+          getRequestReviewed,
+          postRequestSendingDate,
+          getDataContentType,
+          postContentType,
+          getContentIdentify,
+          postIndentify,
+          getSpecialCustomer,
+          postSpecialCustomer,
+          getClassification,
+          postSecurityClassification,
+          getApprovalgroup,
+          postApprovalgroup,
+          getDataNeeded,
+          postDataNeeded,
+          getRequestors,
+    postAddTeammember,
+//         postAdditionalTeamMember,
+          getDatafrom,
+          postDataFrom,
+          getDataTo,
+          postDataTo,
+          getAdditionalInfo,
+    postPhysicalDERAdditonalInformation,
+    getPhysicalCYAPage,
+    postPhysicalDERSubmit,
+  )
 
   runSimulation()
 }
