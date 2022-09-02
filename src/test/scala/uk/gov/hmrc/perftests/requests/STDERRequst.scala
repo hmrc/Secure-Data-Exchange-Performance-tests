@@ -615,7 +615,7 @@ object STDERRequst extends ServicesConfiguration {
 //      .check(RequestUtils.saveCsrfToken)
 //      .check(regex("Additional information").exists)
 //  }
-  def postAPDERAdditonalInformation: HttpRequestBuilder = {
+  def postSTDERAdditonalInformation: HttpRequestBuilder = {
     http("PhysicalDERAdditionalInformation")
       .post(s"$baseUrl/sdes/create-request/additional-information")
       .formParam("field", "helllo")
@@ -623,7 +623,7 @@ object STDERRequst extends ServicesConfiguration {
       .check(status.is(303))
       .check(header("Location").is(s"/sdes/create-request/check-secure-transport-answers":String))
   }
-  def getAPDERCYAPage: HttpRequestBuilder = {
+  def getSTDERCYAPage: HttpRequestBuilder = {
     http("PhysicalCYA")
       .get(s"$baseUrl/sdes/create-request/check-secure-transport-answers")
       .check(status.is(200))

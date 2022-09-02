@@ -3,6 +3,7 @@ package uk.gov.hmrc.perftests.requests
 import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
 import uk.gov.hmrc.perftests.requests.ADDERRequst._
 import uk.gov.hmrc.perftests.requests.STDERRequst._
+import uk.gov.hmrc.perftests.requests.APDERRequst._
 import uk.gov.hmrc.perftests.requests.Requests._
 
 class Simulation extends PerformanceTestRunner {
@@ -174,10 +175,66 @@ class Simulation extends PerformanceTestRunner {
     getDestinationAddress,
     postDestinationAddress,
     getAdditionalInfo,
+    postSTDERAdditonalInformation,
+    getSTDERCYAPage,
+    postStoragemMediaAnnswersSubmit,
+  )
+  setup("APDer Journey", "Navigate to AP DER page") withRequests   (
+    getLoginPage,
+    postStrideAuthPage,
+    postSamlResponse,
+    getSdesLandingPage,
+    getRequestDatamovement,
+    getCreateDER,
+    getCreateTitlename,
+    postEnterDataMovementName,
+    getHowDataMoved,
+    postAPMEDIAtransfer,
+    getStorageMedia,
+    postDataStored,
+    getSecureTransport,
+    postNotASecureTransport,
+    getMoveStorageMedia,
+    postStorageMedia,
+    getDataProtected,
+    postAPProtectedYes,
+    getPackaging,
+    postAPPackaging,
+    getPackagingDetails,
+    postPackagingDetails,
+    getmovingdata,
+    postFrequency,
+    getFrequency,
+    postPhysicalDailyFrequency,
+    getAPStartdate,
+    postAPStartDate,
+    getReviewDate,
+    postReviewDate,
+    getDataContentType,
+    postContentType,
+    getContentIdentify,
+    postIndentify,
+    getSpecialCustomer,
+    postSpecialCustomer,
+    getClassification,
+    postSecurityClassification,
+    getApprovalgroup,
+    postApprovalgroup,
+    getDataNeeded,
+    postDataNeeded,
+    getRequestors,
+    postAddTeammember,
+    //         postAdditionalTeamMember,
+    getSenderorReceive,
+    postSendorReceive,
+    getrecipientcontactdetailsknown,
+    postRecipientYes,
+    getrecipientcontactdetailst,
+    postAPRecipientContactDetails,
+    getAdditionalInfo,
     postAPDERAdditonalInformation,
     getAPDERCYAPage,
     postStoragemMediaAnnswersSubmit,
   )
-
   runSimulation()
 }
