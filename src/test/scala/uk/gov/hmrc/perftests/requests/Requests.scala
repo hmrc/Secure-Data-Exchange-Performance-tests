@@ -1,26 +1,36 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.perftests.requests
 
-import uk.gov.hmrc.performance.conf.ServicesConfiguration
 import io.gatling.core.Predef._
-import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
-import io.gatling.http.request.builder.{HttpAttributes, HttpRequestBuilder}
-import uk.gov.hmrc.perftests.requests.Requests.{baseUrl, strideBaseUrl}
+import io.gatling.http.request.builder.HttpRequestBuilder
+import uk.gov.hmrc.performance.conf.ServicesConfiguration
 import utils.RequestUtils
 
 object Requests extends ServicesConfiguration {
 
   val baseUrl = "https://admin.qa.tax.service.gov.uk"
   val strideBaseUrl = baseUrlFor("stride-auth")
-
-  private def savePageItem(name: String, pattern: String) = regex(_ => pattern).saveAs(name)
-
   //  val csrfPattern = """<input type="hidden" name="csrfToken" value="([^"]+)""""
   val relayStatePattern =
     """<input type="hidden" id="RelayState" name="RelayState" value="([^"]+)""""
   val samlResponsePattern = """<input type="hidden" name="SAMLResponse" value="([^"]+)""""
   val formUrlPattern = """<form action="([^"]+)"""
-
 
   def getLoginPage: HttpRequestBuilder = {
     http("Navigate to auth login stub page")
@@ -60,9 +70,10 @@ object Requests extends ServicesConfiguration {
     http("Navigate to Sdes Landing Page")
       .get(s"$baseUrl/sdes/dashboard/requestor/requestorDashboard")
       .check(status.is(200))
-//      .check(RequestUtils.saveCsrfToken)
+      //      .check(RequestUtils.saveCsrfToken)
       .check(regex("Requestor dashboard").exists)
   }
+
   def getRequestDatamovement: HttpRequestBuilder = {
     http("RequestDatamovement Page")
       .get(s"$baseUrl/sdes/dashboard/requestor/create")
@@ -84,14 +95,16 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Create a title for this data movement").exists)
   }
+
   def postEnterDataMovementName: HttpRequestBuilder = {
     http("EnterDataMovementName")
       .post(s"$baseUrl/sdes/create-request/enter-request-name")
       .formParam("request-name", "Test")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/how-move-data":String))
+      .check(header("Location").is(s"/sdes/create-request/how-move-data": String))
   }
+
   def getHowDataMoved: HttpRequestBuilder = {
     http("HowdatawillbeMoved")
       .get(s"$baseUrl/sdes/create-request/how-move-data")
@@ -99,14 +112,16 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("How do you want to move the data").exists)
   }
+
   def postDigitaltransfer: HttpRequestBuilder = {
     http("DigitalTransfer")
       .post(s"$baseUrl/sdes/create-request/how-move-data")
       .formParam("field", "SDES")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/select-data-direction":String))
+      .check(header("Location").is(s"/sdes/create-request/select-data-direction": String))
   }
+
   def getDirection: HttpRequestBuilder = {
     http("DisplayDirection  ")
       .get(s"$baseUrl/sdes/create-request/select-data-direction")
@@ -114,14 +129,16 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Where is the data moving").exists)
   }
+
   def postDirection: HttpRequestBuilder = {
     http("SelectDirection")
       .post(s"$baseUrl/sdes/create-request/select-data-direction")
       .formParam("data-direction", "INBOUND")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/select-business-area?direction=INBOUND":String))
+      .check(header("Location").is(s"/sdes/create-request/select-business-area?direction=INBOUND": String))
   }
+
   def getBusinessArea: HttpRequestBuilder = {
     http("BusinessArea")
       .get(s"$baseUrl/sdes/create-request/select-business-area?direction=INBOUND")
@@ -129,6 +146,7 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("What type of organisation is sending the data").exists)
   }
+
   def postDERDirection: HttpRequestBuilder = {
     http("DERDirection")
       .post(s"$baseUrl/sdes/create-request/select-business-area?direction=INBOUND")
@@ -136,8 +154,9 @@ object Requests extends ServicesConfiguration {
       .formParam("business-area", "OTHR")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/select-template?businessArea=OTHR&direction=INBOUND":String))
+      .check(header("Location").is(s"/sdes/create-request/select-template?businessArea=OTHR&direction=INBOUND": String))
   }
+
   def getTemplate: HttpRequestBuilder = {
     http("InformationType")
       .get(s"$baseUrl/sdes/create-request/select-template?businessArea=OTHR&direction=INBOUND")
@@ -145,14 +164,16 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Select an information type").exists)
   }
+
   def postInformationType: HttpRequestBuilder = {
     http("Select InformationType")
       .post(s"$baseUrl/sdes/create-request/select-template?businessArea=OTHR&direction=INBOUND")
       .formParam("data-exchange-template", "OthersSETtoSecureFolder_;_No information type_;_INBOUND_;_INDIVIDUAL")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/data-sending-request-frequency":String))
+      .check(header("Location").is(s"/sdes/create-request/data-sending-request-frequency": String))
   }
+
   def getmovingdata: HttpRequestBuilder = {
     http("moving data")
       .get(s"$baseUrl/sdes/create-request/data-sending-request-frequency")
@@ -160,14 +181,16 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Are you moving data more than once").exists)
   }
+
   def postFrequency: HttpRequestBuilder = {
     http("Recurring")
       .post(s"$baseUrl/sdes/create-request/data-sending-request-frequency")
       .formParam("request-frequency", "recurring")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/data-sending-unit-of-frequency":String))
+      .check(header("Location").is(s"/sdes/create-request/data-sending-unit-of-frequency": String))
   }
+
   def getFrequency: HttpRequestBuilder = {
     http("Frequency")
       .get(s"$baseUrl/sdes/create-request/data-sending-unit-of-frequency")
@@ -175,14 +198,16 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("How frequently will the data be moved").exists)
   }
+
   def postDailyFrequency: HttpRequestBuilder = {
     http("DAILYTransfer")
       .post(s"$baseUrl/sdes/create-request/data-sending-unit-of-frequency")
       .formParam("unit-of-frequency", "DAILY")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/data-sending-date-frequency":String))
+      .check(header("Location").is(s"/sdes/create-request/data-sending-date-frequency": String))
   }
+
   def getRequestReviewed: HttpRequestBuilder = {
     http("RequestReviewedDate")
       .get(s"$baseUrl/sdes/create-request/data-sending-date-frequency")
@@ -190,6 +215,7 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("When will this data request be reviewed").exists)
   }
+
   def postRequestSendingDate: HttpRequestBuilder = {
     http("RequestSendingDate")
       .post(s"$baseUrl/sdes/create-request/data-sending-date-frequency")
@@ -198,8 +224,9 @@ object Requests extends ServicesConfiguration {
       .formParam("sending-date.year", "2022")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/data-contents-type":String))
+      .check(header("Location").is(s"/sdes/create-request/data-contents-type": String))
   }
+
   def getDataContentType: HttpRequestBuilder = {
     http("DataContentType")
       .get(s"$baseUrl/sdes/create-request/data-contents-type")
@@ -214,8 +241,9 @@ object Requests extends ServicesConfiguration {
       .formParam("typeOfData", "Test123")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/data-contents-identify":String))
+      .check(header("Location").is(s"/sdes/create-request/data-contents-identify": String))
   }
+
   def getContentIdentify: HttpRequestBuilder = {
     http("DataIdentify")
       .get(s"$baseUrl/sdes/create-request/data-contents-identify")
@@ -223,6 +251,7 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Does the data allow you to identify anyone").exists)
   }
+
   def postIndentify: HttpRequestBuilder = {
     http("Idnentifythedata")
       .post(s"$baseUrl/sdes/create-request/data-contents-identify")
@@ -230,8 +259,9 @@ object Requests extends ServicesConfiguration {
       .formParam("noOfPeople", "123")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/data-contents-special-customer":String))
+      .check(header("Location").is(s"/sdes/create-request/data-contents-special-customer": String))
   }
+
   def getSpecialCustomer: HttpRequestBuilder = {
     http("SpecialCustomer")
       .get(s"$baseUrl/sdes/create-request/data-contents-special-customer")
@@ -239,15 +269,17 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Does the data include special customer records").exists)
   }
+
   def postSpecialCustomer: HttpRequestBuilder = {
     http("Contentsspecialcustomer")
       .post(s"$baseUrl/sdes/create-request/data-contents-special-customer")
       .formParam("isCustomerSpecial", "Yes")
-//      .formParam("howSpecialRemoved", "")
+      //      .formParam("howSpecialRemoved", "")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/data-contents-security-classification":String))
+      .check(header("Location").is(s"/sdes/create-request/data-contents-security-classification": String))
   }
+
   def getClassification: HttpRequestBuilder = {
     http("Classification")
       .get(s"$baseUrl/sdes/create-request/data-contents-security-classification")
@@ -255,14 +287,16 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("What is the Government Security Classification for this data").exists)
   }
+
   def postClassification: HttpRequestBuilder = {
     http("SecurityClassification")
       .post(s"$baseUrl/sdes/create-request/data-contents-security-classification")
       .formParam("field", "Official")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/why-data-needed":String))
+      .check(header("Location").is(s"/sdes/create-request/why-data-needed": String))
   }
+
   def getDataNeeded: HttpRequestBuilder = {
     http("DataNeeded")
       .get(s"$baseUrl/sdes/create-request/why-data-needed")
@@ -270,14 +304,16 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Why will the data be moved").exists)
   }
+
   def postDataNeeded: HttpRequestBuilder = {
     http("WhyDataNeeded")
       .post(s"$baseUrl/sdes/create-request/why-data-needed")
       .formParam("why-data-needed", " Test. 123")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/data-exchange-requestors":String))
+      .check(header("Location").is(s"/sdes/create-request/data-exchange-requestors": String))
   }
+
   def getRequestors: HttpRequestBuilder = {
     http("Requestors")
       .get(s"$baseUrl/sdes/create-request/data-exchange-requestors")
@@ -285,6 +321,7 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Add team members").exists)
   }
+
   def postAddTeammember: HttpRequestBuilder = {
     http("TeamMemberPage")
       .post(s"$baseUrl/sdes/create-request/data-exchange-requestors?showWarning=false")
@@ -293,18 +330,19 @@ object Requests extends ServicesConfiguration {
       .formParam("add-another", "true")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/data-exchange-requestors":String))
+      .check(header("Location").is(s"/sdes/create-request/data-exchange-requestors": String))
   }
-//  def postAdditionalTeamMember: HttpRequestBuilder = {
-//    http("AdditionalTeamMember-No")
-//      .post(s"$baseUrl/sdes/create-request/data-exchange-requestors?showWarning=false")
-//      .formParam("requestors-list[0]", "test tests ; 123 ; Test@gmail.com")
-//      .formParam("requestors-list[1]:", "Vatti, Venkat  ; 7834910 ; venkat.vatti@hmrc.gov.uk")
-//      .formParam("add-another", "false")
-//      .formParam("csrfToken", "${csrfToken}")
-//      .check(status.is(303))
-//      .check(header("Location").is(s"/sdes/create-request/add-organisations":String))
-//  }
+
+  //  def postAdditionalTeamMember: HttpRequestBuilder = {
+  //    http("AdditionalTeamMember-No")
+  //      .post(s"$baseUrl/sdes/create-request/data-exchange-requestors?showWarning=false")
+  //      .formParam("requestors-list[0]", "test tests ; 123 ; Test@gmail.com")
+  //      .formParam("requestors-list[1]:", "Vatti, Venkat  ; 7834910 ; venkat.vatti@hmrc.gov.uk")
+  //      .formParam("add-another", "false")
+  //      .formParam("csrfToken", "${csrfToken}")
+  //      .check(status.is(303))
+  //      .check(header("Location").is(s"/sdes/create-request/add-organisations":String))
+  //  }
   def getOrganisationPage: HttpRequestBuilder = {
     http("OrganisationPage")
       .get(s"$baseUrl/sdes/create-request/add-organisations")
@@ -312,14 +350,16 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Add organisations sending data").exists)
   }
+
   def postAddOrganisation: HttpRequestBuilder = {
     http("AddOrganisation")
       .post(s"$baseUrl/sdes/create-request/add-organisations")
       .formParam("organisation-details[0].name", "Brown Shipley - 317309006941")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/do-you-need-to-add-identifiers":String))
+      .check(header("Location").is(s"/sdes/create-request/do-you-need-to-add-identifiers": String))
   }
+
   def getIndentifiers: HttpRequestBuilder = {
     http("IndentifiersPage")
       .get(s"$baseUrl/sdes/create-request/do-you-need-to-add-identifiers")
@@ -327,14 +367,16 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Do you need to add identifier codes to this request").exists)
   }
+
   def postIndentifiers: HttpRequestBuilder = {
     http("AddIndentifiers")
       .post(s"$baseUrl/sdes/create-request/do-you-need-to-add-identifiers")
       .formParam("field", "false")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/additional-information":String))
+      .check(header("Location").is(s"/sdes/create-request/additional-information": String))
   }
+
   def getAdditionalInfo: HttpRequestBuilder = {
     http("AdditionalinfoPage")
       .get(s"$baseUrl/sdes/create-request/additional-information")
@@ -342,14 +384,16 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Additional information").exists)
   }
+
   def postAdditonalInformation: HttpRequestBuilder = {
     http("AddAdditionalInformation")
       .post(s"$baseUrl/sdes/create-request/additional-information")
       .formParam("field", "helllo")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
-      .check(header("Location").is(s"/sdes/create-request/check-your-answers":String))
+      .check(header("Location").is(s"/sdes/create-request/check-your-answers": String))
   }
+
   def getCYAPage: HttpRequestBuilder = {
     http("CYA")
       .get(s"$baseUrl/sdes/create-request/check-your-answers")
@@ -357,177 +401,180 @@ object Requests extends ServicesConfiguration {
       .check(RequestUtils.saveCsrfToken)
       .check(regex("Check your answers").exists)
   }
-    def postSubmitDER: HttpRequestBuilder = {
+
+  def postSubmitDER: HttpRequestBuilder = {
     http("SubmitDER ")
       .post(s"$baseUrl/sdes/create-request/check-your-answers")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.is(303))
   }
-//  def postCreateDER: HttpRequestBuilder = {
-//    http("Create DER")
-//      .post(s"$baseUrl/sdes/dashboard/requestor/create-der")
-//      .check(RequestUtils.saveCsrfToken)
-//      .check(status.is(303))
-//      .check(header("Location").is(s"/sdes/create-request/select-request-type":String))
-//  }
-//
-//  def getRequestType: HttpRequestBuilder = {
-//    http("get Request type")
-//      .get(s"$baseUrl/sdes/create-request/select-request-type")
-//      .check(status.is(200))
-//      .check(RequestUtils.saveCsrfToken)
-//    .check(regex("Create a new data exchange request").exists)
-//
-//    }
-//
-//  def postRequestType: HttpRequestBuilder = {
-//    http("post Request type")
-//      .post(s"$baseUrl/sdes/create-request/select-request-type")
-//      .formParam("request-type", "electronic")
-////      .formParam("type", "submit")
-//      .formParam("csrfToken", "${csrfToken}")
-//      .check(status.is(303))
-//      .check(header("Location").is(s"/sdes/create-request/select-template":String))
-//
-//
-//  }
-//
-//  def getSelectTemplate: HttpRequestBuilder = {
-//    http("TemplateType")
-//      .get(s"$baseUrl/sdes/create-request/select-template")
-//      .check(RequestUtils.saveCsrfToken)
-//      .check(status.is(200))
-//      .check(regex("Select an information type").exists)
-//
-//  }
-//  def postSelectTemplate: HttpRequestBuilder = {
-//    http("TemplateType")
-//      .post(s"$baseUrl/sdes/create-request/select-template")
-//      .formParam("csrfToken", "${csrfToken}")
-//      .formParam("data-exchange-template", "businessIntel_;_Business Intelligence to MoD")
-//      .check(status.is(303))
-//      .check(header("Location").is(s"/sdes/create-request/data-sending-frequency":String))
-//  }
-////
-//  def getFrequency: HttpRequestBuilder = {
-//    http("Frequency")
-//      .get(s"$baseUrl/sdes/create-request/data-sending-frequency")
-//      .check(RequestUtils.saveCsrfToken)
-//      .check(status.is(200))
-//      .check(regex("Will data be sent more than once in 5 years?").exists)
-//  }
-//  def postFrequency: HttpRequestBuilder = {
-//    http("Frequency")
-//      .post(s"$baseUrl/sdes/create-request/data-sending-frequency")
-//      .formParam("request-frequency", "recurring")
-//      .formParam("csrfToken", "${csrfToken}")
-//      .check(status.is(303))
-//      .check(header("Location").is(s"/sdes/create-request/confirm-requestor-details":String))
-//  }
-//
-//  def getConfirmDetails: HttpRequestBuilder = {
-//    http("get ConfirmDetails")
-//      .get(s"$baseUrl/sdes/create-request/confirm-requestor-details")
-//      .check(status.is(200))
-//      .check(RequestUtils.saveCsrfToken)
-//      .check(regex("Confirm requestor details").exists)
-//  }
-//  def postConfirmDetails: HttpRequestBuilder = {
-//    http("post ConfirmDetails")
-//      .post(s"$baseUrl/sdes/create-request/confirm-requestor-details")
-//      .formParam("main-requestor", "test testst ; 123 ; Test@gmail.com")
-//      .formParam("alternative-requestor.name", "Knight, Gladys ; 2121921 ; Gladys.Knight@hmrc.gov.uk")
-//      .formParam("alternative-requestor.selected", "true")
-//      .formParam("csrfToken", "${csrfToken}")
-//      .check(status.is(303))
-//      .check(header("Location").is(s"/sdes/create-request/number-of-data-recipients":String))
-//
-//  }
-//  def getDataRecipients: HttpRequestBuilder = {
-//    http("get DataRecepients")
-//      .get(s"$baseUrl/sdes/create-request/number-of-data-recipients")
-//      .check(status.is(200))
-//      .check(RequestUtils.saveCsrfToken)
-//      .check(regex("Add organisations").exists)
-//
-//  }
-//  def postDataRecipients: HttpRequestBuilder = {
-//    http("post DataRecepients")
-//      .post(s"$baseUrl/sdes/create-request/number-of-data-recipients")
-//      .formParam("csrfToken", "${csrfToken}")
-//      .check(status.is(303))
-//      .formParam("organisation-number", "1")
-//      .check(header("Location").is(s"/sdes/create-request/enter-recipient-details":String))
-//  }
-////  def getSrn: HttpRequestBuilder = {
-////    http("Srn")
-////      .get(s"https://admin.development.tax.service.gov.uk/sdes/srn-or-name-search?term=Ab")
-////      .check(status.is(200))
-////      .check(regex("").exists)
-////    //      .check(RequestUtils.saveCsrfToken)
-////  }
-////  def postsrn: HttpRequestBuilder = {
-////    http("srn")
-////      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/srn-or-name-search?term=Ab")
-////      .check(status.is(200))
-////      .check(regex("").exists)
-////    //      .check(RequestUtils.saveCsrfToken)
-////  }
-//  def getRecipientDetails: HttpRequestBuilder = {
-//    http("get RecipientDetails")
-//      .get(s"$baseUrl/sdes/create-request/enter-recipient-details")
-//      .check(status.is(200))
-//      .check(regex("Enter organisation details").exists)
-//          .check(RequestUtils.saveCsrfToken)
-//  }
-//  def postRecipientDetails: HttpRequestBuilder = {
-//    http("post RecipientDetails")
-//      .post(s"$baseUrl/sdes/create-request/enter-recipient-details")
-//      .formParam("csrfToken", "${csrfToken}")
-//      .check(status.is(303))
-//      .formParam("organisation-details[0].name", "Abbey Bank PLC - 589117616467")
-//      .formParam("organisation-details[0].selected", "true")
-//      .check(header("Location").is(s"/sdes/create-request/enter-request-name":String))
-//  }
-//  def getRequestName: HttpRequestBuilder = {
-//    http("get RequestName")
-//      .get(s"$baseUrl/sdes/create-request/enter-request-name")
-//      .check(status.is(200))
-//      .check(regex("Enter a request name").exists)
-//      .check(RequestUtils.saveCsrfToken)
-//  }
-//
-//  def postRequestName: HttpRequestBuilder = {
-//    http("post RequestName")
-//      .post(s"$baseUrl/sdes/create-request/enter-request-name")
-//      .formParam("csrfToken", "${csrfToken}")
-//      .check(status.is(303))
-//      .formParam("request-name", "test")
-//      .check(header("Location").is(s"/sdes/create-request/check-your-answers":String))
-//  }
-//
-//  def getCheckYourAnswers: HttpRequestBuilder = {
-//    http("get Checkyouranswers")
-//      .get(s"$baseUrl/sdes/create-request/check-your-answers")
-//      .check(status.is(200))
-//      .check(regex("Check your answers").exists)
-//          .check(RequestUtils.saveCsrfToken)
-//  }
-//
-//  def postCheckyouranswers: HttpRequestBuilder = {
-//    http("post Checkyouranswers")
-//      .post(s"$baseUrl/sdes/create-request/check-your-answers")
-//      .formParam("csrfToken", "${csrfToken}")
-//      .check(status.is(303))
-////      .check(header("Location").is(s"/sdes/create-request/confirmation/STUB-1":String))
-//  }
-//  def getApprovalPage: HttpRequestBuilder = {
-//    http("Sent for Approval page")
-//      .get(s"$baseUrl/sdes/create-request/confirmation/STUB-1")
-//      .check(status.is(200))
-////      .check(regex("Data Exchange Request sent for approval").exists)
-////     .check(RequestUtils.saveCsrfToken)
-//  }
+
+  private def savePageItem(name: String, pattern: String) = regex(_ => pattern).saveAs(name)
+  //  def postCreateDER: HttpRequestBuilder = {
+  //    http("Create DER")
+  //      .post(s"$baseUrl/sdes/dashboard/requestor/create-der")
+  //      .check(RequestUtils.saveCsrfToken)
+  //      .check(status.is(303))
+  //      .check(header("Location").is(s"/sdes/create-request/select-request-type":String))
+  //  }
+  //
+  //  def getRequestType: HttpRequestBuilder = {
+  //    http("get Request type")
+  //      .get(s"$baseUrl/sdes/create-request/select-request-type")
+  //      .check(status.is(200))
+  //      .check(RequestUtils.saveCsrfToken)
+  //    .check(regex("Create a new data exchange request").exists)
+  //
+  //    }
+  //
+  //  def postRequestType: HttpRequestBuilder = {
+  //    http("post Request type")
+  //      .post(s"$baseUrl/sdes/create-request/select-request-type")
+  //      .formParam("request-type", "electronic")
+  ////      .formParam("type", "submit")
+  //      .formParam("csrfToken", "${csrfToken}")
+  //      .check(status.is(303))
+  //      .check(header("Location").is(s"/sdes/create-request/select-template":String))
+  //
+  //
+  //  }
+  //
+  //  def getSelectTemplate: HttpRequestBuilder = {
+  //    http("TemplateType")
+  //      .get(s"$baseUrl/sdes/create-request/select-template")
+  //      .check(RequestUtils.saveCsrfToken)
+  //      .check(status.is(200))
+  //      .check(regex("Select an information type").exists)
+  //
+  //  }
+  //  def postSelectTemplate: HttpRequestBuilder = {
+  //    http("TemplateType")
+  //      .post(s"$baseUrl/sdes/create-request/select-template")
+  //      .formParam("csrfToken", "${csrfToken}")
+  //      .formParam("data-exchange-template", "businessIntel_;_Business Intelligence to MoD")
+  //      .check(status.is(303))
+  //      .check(header("Location").is(s"/sdes/create-request/data-sending-frequency":String))
+  //  }
+  ////
+  //  def getFrequency: HttpRequestBuilder = {
+  //    http("Frequency")
+  //      .get(s"$baseUrl/sdes/create-request/data-sending-frequency")
+  //      .check(RequestUtils.saveCsrfToken)
+  //      .check(status.is(200))
+  //      .check(regex("Will data be sent more than once in 5 years?").exists)
+  //  }
+  //  def postFrequency: HttpRequestBuilder = {
+  //    http("Frequency")
+  //      .post(s"$baseUrl/sdes/create-request/data-sending-frequency")
+  //      .formParam("request-frequency", "recurring")
+  //      .formParam("csrfToken", "${csrfToken}")
+  //      .check(status.is(303))
+  //      .check(header("Location").is(s"/sdes/create-request/confirm-requestor-details":String))
+  //  }
+  //
+  //  def getConfirmDetails: HttpRequestBuilder = {
+  //    http("get ConfirmDetails")
+  //      .get(s"$baseUrl/sdes/create-request/confirm-requestor-details")
+  //      .check(status.is(200))
+  //      .check(RequestUtils.saveCsrfToken)
+  //      .check(regex("Confirm requestor details").exists)
+  //  }
+  //  def postConfirmDetails: HttpRequestBuilder = {
+  //    http("post ConfirmDetails")
+  //      .post(s"$baseUrl/sdes/create-request/confirm-requestor-details")
+  //      .formParam("main-requestor", "test testst ; 123 ; Test@gmail.com")
+  //      .formParam("alternative-requestor.name", "Knight, Gladys ; 2121921 ; Gladys.Knight@hmrc.gov.uk")
+  //      .formParam("alternative-requestor.selected", "true")
+  //      .formParam("csrfToken", "${csrfToken}")
+  //      .check(status.is(303))
+  //      .check(header("Location").is(s"/sdes/create-request/number-of-data-recipients":String))
+  //
+  //  }
+  //  def getDataRecipients: HttpRequestBuilder = {
+  //    http("get DataRecepients")
+  //      .get(s"$baseUrl/sdes/create-request/number-of-data-recipients")
+  //      .check(status.is(200))
+  //      .check(RequestUtils.saveCsrfToken)
+  //      .check(regex("Add organisations").exists)
+  //
+  //  }
+  //  def postDataRecipients: HttpRequestBuilder = {
+  //    http("post DataRecepients")
+  //      .post(s"$baseUrl/sdes/create-request/number-of-data-recipients")
+  //      .formParam("csrfToken", "${csrfToken}")
+  //      .check(status.is(303))
+  //      .formParam("organisation-number", "1")
+  //      .check(header("Location").is(s"/sdes/create-request/enter-recipient-details":String))
+  //  }
+  ////  def getSrn: HttpRequestBuilder = {
+  ////    http("Srn")
+  ////      .get(s"https://admin.development.tax.service.gov.uk/sdes/srn-or-name-search?term=Ab")
+  ////      .check(status.is(200))
+  ////      .check(regex("").exists)
+  ////    //      .check(RequestUtils.saveCsrfToken)
+  ////  }
+  ////  def postsrn: HttpRequestBuilder = {
+  ////    http("srn")
+  ////      .get(s"https://admin.development.tax.service.gov.uk/sdes/create-request/srn-or-name-search?term=Ab")
+  ////      .check(status.is(200))
+  ////      .check(regex("").exists)
+  ////    //      .check(RequestUtils.saveCsrfToken)
+  ////  }
+  //  def getRecipientDetails: HttpRequestBuilder = {
+  //    http("get RecipientDetails")
+  //      .get(s"$baseUrl/sdes/create-request/enter-recipient-details")
+  //      .check(status.is(200))
+  //      .check(regex("Enter organisation details").exists)
+  //          .check(RequestUtils.saveCsrfToken)
+  //  }
+  //  def postRecipientDetails: HttpRequestBuilder = {
+  //    http("post RecipientDetails")
+  //      .post(s"$baseUrl/sdes/create-request/enter-recipient-details")
+  //      .formParam("csrfToken", "${csrfToken}")
+  //      .check(status.is(303))
+  //      .formParam("organisation-details[0].name", "Abbey Bank PLC - 589117616467")
+  //      .formParam("organisation-details[0].selected", "true")
+  //      .check(header("Location").is(s"/sdes/create-request/enter-request-name":String))
+  //  }
+  //  def getRequestName: HttpRequestBuilder = {
+  //    http("get RequestName")
+  //      .get(s"$baseUrl/sdes/create-request/enter-request-name")
+  //      .check(status.is(200))
+  //      .check(regex("Enter a request name").exists)
+  //      .check(RequestUtils.saveCsrfToken)
+  //  }
+  //
+  //  def postRequestName: HttpRequestBuilder = {
+  //    http("post RequestName")
+  //      .post(s"$baseUrl/sdes/create-request/enter-request-name")
+  //      .formParam("csrfToken", "${csrfToken}")
+  //      .check(status.is(303))
+  //      .formParam("request-name", "test")
+  //      .check(header("Location").is(s"/sdes/create-request/check-your-answers":String))
+  //  }
+  //
+  //  def getCheckYourAnswers: HttpRequestBuilder = {
+  //    http("get Checkyouranswers")
+  //      .get(s"$baseUrl/sdes/create-request/check-your-answers")
+  //      .check(status.is(200))
+  //      .check(regex("Check your answers").exists)
+  //          .check(RequestUtils.saveCsrfToken)
+  //  }
+  //
+  //  def postCheckyouranswers: HttpRequestBuilder = {
+  //    http("post Checkyouranswers")
+  //      .post(s"$baseUrl/sdes/create-request/check-your-answers")
+  //      .formParam("csrfToken", "${csrfToken}")
+  //      .check(status.is(303))
+  ////      .check(header("Location").is(s"/sdes/create-request/confirmation/STUB-1":String))
+  //  }
+  //  def getApprovalPage: HttpRequestBuilder = {
+  //    http("Sent for Approval page")
+  //      .get(s"$baseUrl/sdes/create-request/confirmation/STUB-1")
+  //      .check(status.is(200))
+  ////      .check(regex("Data Exchange Request sent for approval").exists)
+  ////     .check(RequestUtils.saveCsrfToken)
+  //  }
 
 }
 

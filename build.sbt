@@ -5,41 +5,33 @@ import sbt.plugins.{CorePlugin, IvyPlugin, JvmPlugin}
 lazy val appName = "secure-data-exchange-performance-tests"
 lazy val appVersion = "0.1.0-SNAPSHOT"
 
-val gatlingVersion = "2.2.5"
+val gatlingVersion = "3.5.0"
 
 lazy val appDependencies = Seq(
   "io.gatling" % "gatling-test-framework" % gatlingVersion,
   "io.gatling.highcharts" % "gatling-charts-highcharts" % gatlingVersion,
-  "com.typesafe" % "config" % "1.3.1",
-  "uk.gov.hmrc" %% "api-performance-test-runner" % "1.32.0",
-  "uk.gov.hmrc" %% "performance-test-runner" % "3.5.0"
+  "com.typesafe"          % "config"                    % "1.4.2",
+  "com.fasterxml.jackson.module" %% "jackson-module-scala"        % "2.14.2",
+  "uk.gov.hmrc"                  %% "api-performance-test-runner" % "1.44.0",
+  "uk.gov.hmrc" %% "performance-test-runner" % "5.5.0"
 )
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(GatlingPlugin, CorePlugin, JvmPlugin, IvyPlugin)
-  .disablePlugins(JUnitXmlReportPlugin)
+  .enablePlugins(GatlingPlugin)
+  .enablePlugins(SbtAutoBuildPlugin)
   .settings(
-    organization := "uk.gov.hmrc",
-    version := appVersion,
-    scalaVersion := "2.12.15",
+    organization              := "uk.gov.hmrc",
+    version                   := appVersion,
+    scalaVersion              := "2.13.8",
     scalacOptions ++= Seq(
-      "-unchecked",
-      "-deprecation",
-      "-Xlint",
-      "-language:_",
-      "-target:jvm-1.8",
-      "-Xmax-classfile-name", "100",
-      "-encoding", "UTF-8"
+      "-feature",
+      "-language:implicitConversions",
+      "-language:postfixOps"
     ),
-    retrieveManaged := true,
+    retrieveManaged           := true,
     console / initialCommands := "import uk.gov.hmrc._",
-    Test / parallelExecution := false,
-    Test / publishArtifact := true,
-    libraryDependencies ++= appDependencies,
-    resolvers ++= Seq(
-      "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/",
-      Resolver.bintrayRepo("hmrc", "releases"),
-      Resolver.typesafeRepo("releases"),
-      Resolver.jcenterRepo
-    )
+    Test / parallelExecution  := false,
+    Test / publishArtifact    := true,
+    Test / testOptions        := Seq.empty,
+    libraryDependencies ++= appDependencies
   )
