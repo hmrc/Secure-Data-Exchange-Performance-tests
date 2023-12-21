@@ -22,9 +22,9 @@
     <logger name="io.gatling.http.engine.response" level="WARN" />
 
     <!-- Sets the performance-test-runner log level-->
-    <logger name="uk.gov.hmrc.performance" level="DEBUG"/>
+    <logger name="uk.gov.hmrc.performance" level="WARN"/>
 
-    <root level="DEBUG">
+    <root level="WARN">
         <appender-ref ref="CONSOLE"/>
     </root>
 
