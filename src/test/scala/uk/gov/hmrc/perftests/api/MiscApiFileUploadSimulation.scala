@@ -20,6 +20,7 @@ import uk.gov.hmrc.performance.api.APIPerformanceTest
 import uk.gov.hmrc.performance.api.models.{PerformanceTest, PerformanceTestConfiguration}
 import uk.gov.hmrc.perftests.api.MiscApiRequests.postThirdPartyMiscAPiUrlRequest
 import uk.gov.hmrc.perftests.api.TestConfiguration.{concurrentUsers, constantRateTime, maxLoadPerSecond, percentageFailureThreshold, rampDownTime, rampUpTime, requestPercentageFailureThreshold, testDuration}
+import uk.gov.hmrc.performance.api.configuration.APIConfiguration.readProperty
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
@@ -32,6 +33,8 @@ class MiscApiFileUploadSimulation extends APIPerformanceTest {
     scope = "write:transfer-complete",
     feeder = "data/miscApiFeeder.csv"
   )
+  val percentileThreshold: Int = readProperty("perftest.responseTime95PercentileThreshold", "250").toInt
+  val nintyNinePercentileThreshold: Int = readProperty("perftest.responseTime99PercentileThreshold", "500").toInt
 
   val performanceTestConfiguration = PerformanceTestConfiguration(
     duration = testDuration,
@@ -47,6 +50,10 @@ class MiscApiFileUploadSimulation extends APIPerformanceTest {
     super.runSimulation(false, performanceTestConfiguration)
       .maxDuration(rampUpTime + constantRateTime + rampDownTime + timeoutAtEndOfTest)
       .assertions(global.failedRequests.percent.lte(percentageFailureThreshold))
+      .assertions(
+        global.responseTime.percentile(95).lte(percentileThreshold),
+        global.responseTime.percentile(99).lte(nintyNinePercentileThreshold)
+      )
   }
 
 }
