@@ -16,13 +16,15 @@
 
 package uk.gov.hmrc.perftests.api
 
-import io.gatling.core.Predef.exec
 import uk.gov.hmrc.performance.api.APIPerformanceTest
 import uk.gov.hmrc.performance.api.models.{PerformanceTest, PerformanceTestConfiguration}
-import uk.gov.hmrc.performance.conf.JourneyConfiguration
 import uk.gov.hmrc.perftests.api.MiscApiRequests.postThirdPartyMiscAPiUrlRequest
+import uk.gov.hmrc.perftests.api.TestConfiguration.{concurrentUsers, constantRateTime, maxLoadPerSecond, percentageFailureThreshold, rampDownTime, rampUpTime, requestPercentageFailureThreshold, testDuration}
 
-class MiscApiFileUploadSimulation extends APIPerformanceTest with JourneyConfiguration {
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
+
+class MiscApiFileUploadSimulation extends APIPerformanceTest {
+  import io.gatling.core.Predef._
 
   override val performanceTest: PerformanceTest = PerformanceTest(
     title = "Secure-data-exchange-service-misc-api",
@@ -31,13 +33,20 @@ class MiscApiFileUploadSimulation extends APIPerformanceTest with JourneyConfigu
     feeder = "data/miscApiFeeder.csv"
   )
 
-  override protected def runSimulation(privileged: Boolean = false, performanceTestConfiguration: PerformanceTestConfiguration): SetUp = {
-    if (journeysAvailable.contains(performanceTest.title)) {
-      super.runSimulation()
-    } else {
-      setUp(Seq.empty: _*)
-    }
+  val performanceTestConfiguration = PerformanceTestConfiguration(
+    duration = testDuration,
+    maxLoadPerSecond = maxLoadPerSecond,
+    concurrentUsers = concurrentUsers
+  )
+
+  runSimulation(false, performanceTestConfiguration)
+
+  override def runSimulation(privileged: Boolean = false, performanceTestConfiguration: PerformanceTestConfiguration): SetUp = {
+    val timeoutAtEndOfTest: FiniteDuration = 5 minutes
+
+    super.runSimulation(false, performanceTestConfiguration)
+      .maxDuration(rampUpTime + constantRateTime + rampDownTime + timeoutAtEndOfTest)
+      .assertions(global.failedRequests.percent.lte(percentageFailureThreshold))
   }
 
-  runSimulation()
 }

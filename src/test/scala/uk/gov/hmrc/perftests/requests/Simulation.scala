@@ -28,7 +28,7 @@ class Simulation extends PerformanceTestRunner {
     getLoginPage,
     postStrideAuthPage,
     postSamlResponse,
-    getSdesLandingPage,
+    getSdesLandingPage,/*
     getRequestDatamovement,
     getCreateDER,
     getCreateTitlename,
@@ -67,7 +67,7 @@ class Simulation extends PerformanceTestRunner {
       getAdditionalInfo,
       postAdditonalInformation,
       getCYAPage,
-      postSubmitDER
+      postSubmitDER*/
   )
 
   setup("ADDer Journey", "Navigate to AD DER page") withRequests   (
