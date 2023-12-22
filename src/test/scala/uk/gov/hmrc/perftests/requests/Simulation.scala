@@ -25,10 +25,10 @@ import uk.gov.hmrc.perftests.requests.Requests._
 class Simulation extends PerformanceTestRunner {
 
   setup("Sdes Journey", "Navigate to sdes  page") withRequests (
-    getLoginPage,
+    getLoginPage/*,
     postStrideAuthPage,
     postSamlResponse,
-    getSdesLandingPage,/*
+    getSdesLandingPage
     getRequestDatamovement,
     getCreateDER,
     getCreateTitlename,

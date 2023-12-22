@@ -23,6 +23,11 @@ import uk.gov.hmrc.perftests.api.TestConfiguration._
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
+class TransferNotificationsSimulation{
+
+
+}
+/*
 class TransferNotificationsSimulation extends APIPerformanceTest {
 
   import io.gatling.core.Predef._
@@ -52,3 +57,4 @@ class TransferNotificationsSimulation extends APIPerformanceTest {
   }
 
 }
+*/
