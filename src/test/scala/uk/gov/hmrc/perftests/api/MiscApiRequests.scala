@@ -23,31 +23,33 @@ import uk.gov.hmrc.performance.api.configuration.APIConfiguration.apiGatewayBase
 
 object MiscApiRequests extends APIRequest {
 
-  val postThirdPartyMiscAPiUrlRequest = apiRequest({
-    http("POST Create third-party upload URL's")
-      .post(apiGatewayBaseUrl + "/misc/sdes-file-upload/files/upload/url/${srn}/${filetype}")
-      .body(StringBody(
-        """[
-           |  {
-           |    "filename": "${srn}.csv",
-           |    "metadata": [
-           |                  {
-           |                    "key": "${key1}",
-           |                    "value": "${value1}"
-           |                  },
-           |                  {
-           |                    "key": "${key2}",
-           |                    "value": "${value2}"
-           |                  }
-           |               ]
-           |   }
-           |]
-           |          """.stripMargin))
-      .headers(Map(
-        "Authorization" -> "Bearer ${accessToken}",
-        "Accept" -> "application/vnd.hmrc.1.0+json",
-        "Content-Type" -> "application/json"))
-      .check(status.is(201))
-  })
+  val postThirdPartyMiscAPiUrlRequest = {
+    apiRequest({
+      http("POST Create third-party upload URL's")
+        .post(apiGatewayBaseUrl + "/misc/sdes-file-upload/files/upload/url/${srn}/${filetype}")
+        .body(StringBody(
+          """[
+            |  {
+            |    "filename": "${srn}.csv",
+            |    "metadata": [
+            |                  {
+            |                    "key": "${key1}",
+            |                    "value": "${value1}"
+            |                  },
+            |                  {
+            |                    "key": "${key2}",
+            |                    "value": "${value2}"
+            |                  }
+            |               ]
+            |   }
+            |]
+            |          """.stripMargin))
+        .headers(Map(
+          "Authorization" -> "Bearer f1205560b2aa06764c689dcb3286dd2f",
+          "Accept" -> "application/vnd.hmrc.1.0+json",
+          "Content-Type" -> "application/json"))
+        .check(status.is(201))
+    })
+  }
 
 }

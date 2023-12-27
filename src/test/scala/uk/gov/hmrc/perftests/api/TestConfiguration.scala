@@ -25,15 +25,15 @@ object TestConfiguration extends Configuration {
 
   lazy val loadPercentage: Long = readProperty("perftest.loadPercentage", "100").toLong / 100L
   lazy val testDuration: FiniteDuration = readProperty("perftest.durationInSeconds", "60").toInt.seconds
-  lazy val maxLoadPerSecond: Int = readProperty("perftest.maxLoadPerSecond", "60").toInt
-  lazy val concurrentUsers: Int = readProperty("perftest.concurrentUsers", "60").toInt
-  lazy val rampUpDuration: Int = readProperty("perftest.rampUpDuration", "60").toInt
+  lazy val maxLoadPerSecond: Int = readProperty("perftest.maxLoadPerSecond", "30").toInt
+  lazy val concurrentUsers: Int = readProperty("perftest.concurrentUsers", "2").toInt
+  lazy val rampUpDuration: Int = readProperty("perftest.rampUpDuration", "10").toInt
 
   import scala.concurrent.duration._
 
   lazy val rampUpTime: FiniteDuration             = readProperty("perftest.rampupTime", "1").toInt minutes
   lazy val rampDownTime: FiniteDuration           = readProperty("perftest.rampdownTime", "1").toInt minutes
-  lazy val constantRateTime: FiniteDuration       = readProperty("perftest.constantRateTime", "5").toInt minutes
+  lazy val constantRateTime: FiniteDuration       = readProperty("perftest.constantRateTime", "1").toInt minutes
   lazy val runSingleUserJourney: Boolean          = readProperty("perftest.runSmokeTest", "true").toBoolean
   lazy val percentageFailureThreshold: Int        = readProperty("perftest.percentageFailureThreshold", "1").toInt
   lazy val requestPercentageFailureThreshold: Int =
