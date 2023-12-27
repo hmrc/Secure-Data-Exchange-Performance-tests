@@ -30,7 +30,7 @@ object MiscApiRequests extends APIRequest {
         .body(StringBody(
           """[
             |  {
-            |    "filename": "${srn}.csv",
+            |    "filename": "${filename}",
             |    "metadata": [
             |                  {
             |                    "key": "${key1}",
@@ -45,7 +45,7 @@ object MiscApiRequests extends APIRequest {
             |]
             |          """.stripMargin))
         .headers(Map(
-          "Authorization" -> "Bearer f1205560b2aa06764c689dcb3286dd2f",
+          "Authorization" -> "Bearer ${accessToken}",
           "Accept" -> "application/vnd.hmrc.1.0+json",
           "Content-Type" -> "application/json"))
         .check(status.is(201))
