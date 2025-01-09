@@ -18,27 +18,17 @@ package uk.gov.hmrc.perftests.api
 
 import io.gatling.core.Predef.exec
 import uk.gov.hmrc.performance.api.APIPerformanceTest
-import uk.gov.hmrc.performance.api.models.{PerformanceTest, PerformanceTestConfiguration}
+import uk.gov.hmrc.performance.api.models.PerformanceTest
 import uk.gov.hmrc.performance.conf.JourneyConfiguration
-import uk.gov.hmrc.perftests.api.NotificationRequests._
+import uk.gov.hmrc.perftests.requests.KeyRotationApiRequests.requestPostKeyAPiUrlRequest
 
-class TransferNotificationsSimulation extends APIPerformanceTest with JourneyConfiguration {
+class KeyRoationApiSimulation extends APIPerformanceTest with JourneyConfiguration {
 
   override val performanceTest: PerformanceTest = PerformanceTest(
-    title = "Secure-Data-Exchange-Notifications",
-    apis = exec(postTransferCompleteNotification),
+    title = "Secure-data-exchange-key-rotation-api",
+    apis = exec(requestPostKeyAPiUrlRequest()),
     scope = "write:transfer-complete",
-    feeder = "data/transfernotifications.csv"
+    feeder = "data/miscApiFeeder.csv"
   )
-
-override protected def runSimulation(privileged: Boolean = false, performanceTestConfiguration: PerformanceTestConfiguration): SetUp = {
-  if (journeysAvailable.contains(performanceTest.title)) {
-    super.runSimulation()
-  } else {
-    setUp(Seq.empty: _*)
-  }
-}
-
   runSimulation()
-
 }

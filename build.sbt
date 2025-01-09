@@ -1,28 +1,22 @@
 import sbt.Keys._
 import sbt._
-import sbt.plugins.{CorePlugin, IvyPlugin, JvmPlugin}
 
 lazy val appName = "secure-data-exchange-performance-tests"
 lazy val appVersion = "0.1.0-SNAPSHOT"
 
-val gatlingVersion = "3.5.0"
-
 lazy val appDependencies = Seq(
-  "io.gatling" % "gatling-test-framework" % gatlingVersion,
-  "io.gatling.highcharts" % "gatling-charts-highcharts" % gatlingVersion,
-  "com.typesafe"          % "config"                    % "1.4.2",
   "com.fasterxml.jackson.module" %% "jackson-module-scala"        % "2.14.2",
-  "uk.gov.hmrc"                  %% "api-performance-test-runner" % "1.44.0",
-  "uk.gov.hmrc" %% "performance-test-runner" % "5.5.0"
+  "uk.gov.hmrc"                  %% "api-performance-test-runner" % "1.52.0",
+  "uk.gov.hmrc" %% "performance-test-runner" % "5.5.0" % Test // Due to api-performance-test-runner only supporting gatling core 3.5.1, cannot go higher than 5.5.0
 )
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(GatlingPlugin)
-  .enablePlugins(SbtAutoBuildPlugin)
+//  .enablePlugins(SbtAutoBuildPlugin)
   .settings(
     organization              := "uk.gov.hmrc",
     version                   := appVersion,
-    scalaVersion              := "2.13.8",
+    scalaVersion              := "2.13.12",
     scalacOptions ++= Seq(
       "-feature",
       "-language:implicitConversions",
