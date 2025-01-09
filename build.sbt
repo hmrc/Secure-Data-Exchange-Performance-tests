@@ -12,7 +12,6 @@ lazy val appDependencies = Seq(
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(GatlingPlugin)
-//  .enablePlugins(SbtAutoBuildPlugin)
   .settings(
     organization              := "uk.gov.hmrc",
     version                   := appVersion,

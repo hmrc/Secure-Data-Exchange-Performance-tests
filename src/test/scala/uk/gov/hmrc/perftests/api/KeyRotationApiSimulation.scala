@@ -27,8 +27,8 @@ class KeyRoationApiSimulation extends APIPerformanceTest with JourneyConfigurati
   override val performanceTest: PerformanceTest = PerformanceTest(
     title = "Secure-data-exchange-key-rotation-api",
     apis = exec(requestPostKeyAPiUrlRequest()),
-    scope = "write:transfer-complete",
-    feeder = "data/miscApiFeeder.csv"
+    scope = "write:key-rotation", // scope required despite not being used by api
+    feeder = "data/helloworld.csv" // use dummy feeder
   )
   runSimulation()
 }
