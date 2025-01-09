@@ -93,7 +93,7 @@ object KeyRotationApiRequests extends APIRequest {
           "x-information-type" -> s"${informationType}",
         )
         )
-        .check(status.is(201))
+        .check(status.is(202))
     })
   }
 
