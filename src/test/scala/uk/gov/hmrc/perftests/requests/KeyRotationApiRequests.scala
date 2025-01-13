@@ -26,12 +26,14 @@ import java.time.Instant
 
 object KeyRotationApiRequests extends APIRequest {
 
+  val rotationKey = "be35bf67-0932-4ad8-86d0-56e4f5f3f9f4"
+
   def requestPostKeyAPiUrlRequest(): HttpRequestBuilder = {
 
     val fortyNineHoursInSeconds: Int = 60 * 60 * 49
     val effectiveDateTime: Instant = Instant.now().plusSeconds(fortyNineHoursInSeconds)
     val srn: String = "561121409291"
-    val rotationKey = "be35bf67-0932-4ad8-86d0-56e4f5f3f9f4"
+
     val informationType = "CNIRegisteredPensionSchemeReliefatsource-RPSRAS"
 
     val url: String = apiGatewayBaseUrl + "/misc/exchange/customer-encryption-public-key"
@@ -97,4 +99,31 @@ object KeyRotationApiRequests extends APIRequest {
     })
   }
 
+  def requestDeleteKeyAPiUrlRequest(): HttpRequestBuilder = {
+    val url: String = apiGatewayBaseUrl + s"/misc/exchange/customer-encryption-public-key/$rotationKey"
+
+    apiRequest({
+      http("DELETE Request key rotation API")
+        .delete(url)
+        .headers(Map(
+          "Authorization" -> "Bearer ${accessToken}"
+          )
+        )
+        .check(status.is(202))
+    })
+  }
+
+  def requestGetSdesPublicKeyApiRequest(): HttpRequestBuilder = {
+    val url: String = apiGatewayBaseUrl + "/misc/exchange/sdes-encryption-public-key/current"
+
+    apiRequest({
+      http("GET Request SDES public key API")
+        .get(url)
+        .headers(Map(
+          "Authorization" -> "Bearer ${accessToken}"
+        )
+        )
+        .check(status.is(200))
+    })
+  }
 }

@@ -20,13 +20,14 @@ import io.gatling.core.Predef.exec
 import uk.gov.hmrc.performance.api.APIPerformanceTest
 import uk.gov.hmrc.performance.api.models.PerformanceTest
 import uk.gov.hmrc.performance.conf.JourneyConfiguration
-import uk.gov.hmrc.perftests.requests.KeyRotationApiRequests.requestPostKeyAPiUrlRequest
+import uk.gov.hmrc.perftests.requests.KeyRotationApiRequests.{requestDeleteKeyAPiUrlRequest, requestGetSdesPublicKeyApiRequest, requestPostKeyAPiUrlRequest}
 
 class KeyRoationApiSimulation extends APIPerformanceTest with JourneyConfiguration {
+  // exec(Seq(/*requestPostKeyAPiUrlRequest(),*/ requestDeleteKeyAPiUrlRequest()/*, requestGetSdesPublicKeyApiRequest()*/)),
 
   override val performanceTest: PerformanceTest = PerformanceTest(
     title = "Secure-data-exchange-key-rotation-api",
-    apis = exec(requestPostKeyAPiUrlRequest()),
+    apis =  exec( exec(requestPostKeyAPiUrlRequest()), exec(requestDeleteKeyAPiUrlRequest()), exec(requestGetSdesPublicKeyApiRequest())),
     scope = "write:transfer-complete", // scope required despite not being used by api
     feeder = "data/helloworld.csv" // use dummy feeder
   )
