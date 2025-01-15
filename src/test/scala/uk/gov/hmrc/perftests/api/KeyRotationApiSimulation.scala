@@ -18,12 +18,11 @@ package uk.gov.hmrc.perftests.api
 
 import io.gatling.core.Predef.exec
 import uk.gov.hmrc.performance.api.APIPerformanceTest
-import uk.gov.hmrc.performance.api.models.{PerformanceTest, PerformanceTestConfiguration}
+import uk.gov.hmrc.performance.api.models.PerformanceTest
 import uk.gov.hmrc.performance.conf.JourneyConfiguration
 import uk.gov.hmrc.perftests.requests.KeyRotationApiRequests.{requestDeleteKeyAPiUrlRequest, requestGetSdesPublicKeyApiRequest, requestPostKeyAPiUrlRequest}
 
-class KeyRoationApiSimulation extends APIPerformanceTest with JourneyConfiguration {
-  // exec(Seq(/*requestPostKeyAPiUrlRequest(),*/ requestDeleteKeyAPiUrlRequest()/*, requestGetSdesPublicKeyApiRequest()*/)),
+class KeyRotationApiSimulation extends APIPerformanceTest with JourneyConfiguration {
 
   override val performanceTest: PerformanceTest = PerformanceTest(
     title = "Secure-data-exchange-key-rotation-api",
@@ -31,14 +30,6 @@ class KeyRoationApiSimulation extends APIPerformanceTest with JourneyConfigurati
     scope = "write:transfer-complete", // scope required despite not being used by api
     feeder = "data/helloworld.csv" // use dummy feeder
   )
-
-  override protected def runSimulation(privileged: Boolean = false, performanceTestConfiguration: PerformanceTestConfiguration): SetUp = {
-    if (journeysAvailable.contains(performanceTest.title)) {
-      super.runSimulation()
-    } else {
-      setUp(Seq.empty: _*)
-    }
-  }
 
   runSimulation()
 }
